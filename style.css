@@ -1,0 +1,22 @@
+header{
+    height: 20%;
+    position: -webkit-sticky;
+    position: sticky;
+    top:0;
+    background-color: aquamarine;
+}
+main{
+    overflow-y: scroll;
+    max-height: 80%;
+}
+footer{
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    align-self: center;
+    height: 20%;
+    background-color: aquamarine;
+}
+
+
+

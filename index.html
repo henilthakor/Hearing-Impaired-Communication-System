@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>HICS</title>
+    <link rel="stylesheet" href="design.css">
+  </head>
+  <body>
+    <center>
+    <header>
+      <h1>H I C S</h1>
+      <p>Hearing Impaired Communication System</p>
+    </header>
+    <main>
+      <br>
+      <div id="result"></div>
+      <p id="message" hidden aria-hidden="true">
+        Your browser doesn't support Speech Recognition. Sorry.
+      </p>
+      <hr id="bottom">
+    </main>
+    <footer>
+      <p id="buttontext">Press the button to start conversion!!!</p>
+      <button id="button">Start Conversion</button>
+      <br><br>
+      <button id="doc" onclick="window.location.href = 'documentation.html';"> 
+        View Documentation
+      </button>
+    </footer>
+    </center>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const button = document.getElementById("button");
+        const result = document.getElementById("result");
+        const main = document.getElementsByTagName("main")[0];
+        let listening = false;
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (typeof SpeechRecognition !== "undefined") {
+          const recognition = new SpeechRecognition();
+
+          const stop = () => {
+            main.classList.remove("speaking");
+            recognition.stop();
+            button.textContent = "Start Conversion";
+            document.getElementById("buttontext").innerHTML= "Press the button to start conversion!!!";
+          };
+
+          const start = () => {
+            main.classList.add("speaking");
+            recognition.start();
+            button.textContent = "Stop Conversion";
+            document.getElementById("buttontext").innerHTML= "Press the button to stop conversion!!!";
+          };
+
+          const onResult = event => {
+            result.innerHTML = "";
+            for (const res of event.results) {
+              text = String(res[0].transcript);
+              //console.log(text);
+              console.log(res[0].confidence);
+              text = text.toLowerCase();
+              //console.log(text);
+              alpha = text.split("");
+              //console.log(alpha);
+              var i;
+              const p = document.createElement("p")
+              if (res.isFinal)
+              {
+                p.classList.add("final");
+              }
+              for(i=0;i<alpha.length; i++)
+              {
+                //console.log(alpha[i]);
+                var path = String(alpha[i]).concat(".jpg");
+                var x = document.createElement("IMG");
+                x.setAttribute("src", path);
+                x.setAttribute("width", "12%");
+                x.setAttribute("height", "8%");
+                x.setAttribute("alt", String(i));
+                x.setAttribute("class", "image");
+                if(alpha[i]==" ")
+                {
+                   x = document.createElement("br");
+                }
+                p.appendChild(x);
+              }
+              result.appendChild(p);
+              document.getElementById( 'bottom' ).scrollIntoView();
+            }
+          };
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.addEventListener("result", onResult);
+          button.addEventListener("click", event => {
+            listening ? stop() : start();
+            listening = !listening;
+          });
+        } else {
+          button.remove();
+          const message = document.getElementById("message");
+          message.removeAttribute("hidden");
+          message.setAttribute("aria-hidden", "false");
+        }
+      });
+      
+    </script>
+  </body>
+</html>
